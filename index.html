@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Quiz - Liberalismo e Escravidão nos EUA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #1e1e1e;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.container {
+  width: 90%;
+  max-width: 500px;
+  background: #2c2c2c;
+  padding: 20px;
+  border-radius: 10px;
+}
+h1, h2 {
+  text-align: center;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #4caf50;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+button:hover {
+  background: #45a049;
+}
+.option {
+  background: #444;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.option:hover {
+  background: #555;
+}
+.correct {
+  background: #2e7d32;
+}
+.wrong {
+  background: #c62828;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="start">
+  <h1>Quiz Histórico</h1>
+  <p>Digite seu nome para começar:</p>
+  <input type="text" id="playerName" placeholder="Seu nome">
+  <button onclick="startQuiz()">Iniciar Jogo</button>
+</div>
+
+<div class="container" id="quiz" style="display:none;">
+  <h2 id="question"></h2>
+  <div id="options"></div>
+</div>
+
+<div class="container" id="end" style="display:none;">
+  <h1>Fim do Jogo 🎉</h1>
+  <p id="finalScore"></p>
+  <button onclick="location.reload()">Jogar Novamente</button>
+</div>
+
+<script>
+const questions = [
+  { q: "Em que ano os Estados Unidos se tornaram independentes?", options: ["1492","1776","1789","1865"], correct: 1 },
+  { q: "Quais ideias do Iluminismo influenciaram a independência dos EUA?", options: ["Obediência ao rei","Nacionalismo","Liberdade e igualdade perante a lei","Socialismo"], correct: 2 },
+  { q: "Quem mais se beneficiava do liberalismo nesse período?", options: ["Todos","Escravizados","Mulheres","Homens brancos proprietários"], correct: 3 },
+  { q: "Onde a escravidão era mais importante economicamente?", options: ["Norte","Sul","Oeste","Centro"], correct: 1 },
+  { q: "Quais produtos dependiam do trabalho escravizado?", options: ["Milho e trigo","Café e açúcar","Algodão e tabaco","Soja e arroz"], correct: 2 },
+  { q: "Como os escravizados eram vistos legalmente?", options: ["Cidadãos","Trabalhadores","Propriedade","Imigrantes"], correct: 2 },
+  { q: "Como era a vida dos escravizados?", options: ["Com direitos","Leve","Livre","Violenta e desumana"], correct: 3 },
+  { q: "Qual NÃO foi forma de resistência?", options: ["Fugas","Revoltas","Comunidades livres","Aceitação passiva"], correct: 3 },
+  { q: "Qual era a principal contradição dos EUA?", options: ["Monarquia","Liberdade com escravidão","Socialismo","Guerra externa"], correct: 1 },
+  { q: "O que aboliu a escravidão nos EUA?", options: ["Independência","Vitória do Sul","13ª Emenda","Revoltas"], correct: 2 }
+];
+
+let current = 0;
+let score = 0;
+let player = "";
+
+function startQuiz() {
+  player = document.getElementById("playerName").value;
+  if (!player) return alert("Digite seu nome!");
+  document.getElementById("start").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[current];
+  document.getElementById("question").innerText = q.q;
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerText = opt;
+    div.onclick = () => checkAnswer(i, div);
+    optionsDiv.appendChild(div);
+  });
+}
+
+function checkAnswer(index, element) {
+  const correctIndex = questions[current].correct;
+  const options = document.querySelectorAll(".option");
+  options.forEach(o => o.onclick = null);
+  if (index === correctIndex) {
+    element.classList.add("correct");
+    score++;
+  } else {
+    element.classList.add("wrong");
+    options[correctIndex].classList.add("correct");
+  }
+  setTimeout(() => {
+    current++;
+    if (current < questions.length) loadQuestion();
+    else endGame();
+  }, 1500);
+}
+
+function endGame() {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("end").style.display = "block";
+  document.getElementById("finalScore").innerText =
+    `${player}, sua pontuação foi ${score} de ${questions.length}`;
+}
+</script>
+
+</body>
+</html>
